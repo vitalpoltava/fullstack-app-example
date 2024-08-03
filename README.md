@@ -22,3 +22,6 @@ CRUD App with simple product items
 `cd frontend`
 `npm start`
 
+![add-new](add-new.png)
+
+![list](list.png)
