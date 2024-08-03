@@ -16,9 +16,9 @@ CRUD App with simple product items
 
 ## You can run:
 
-### `cd backend`
-### `npm start`
+`cd backend`
+`npm start`
 
-### `cd frontend`
-### `npm start`
+`cd frontend`
+`npm start`
 
