@@ -1,0 +1,10 @@
+.gridCellLeft {
+    padding: 2rem 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.gridCellRight {
+    padding: 2rem 0;
+    text-align: right;
+}
