@@ -14,8 +14,8 @@ import DeleteProduct from "./delete-product/DeleteProduct";
 
 export const useStore = create<State>((set) => ({
   ...initialState,
-  setDeletedProduct: (product: Product | null) =>
-    set((store) => ({selectedDeleteProduct: product})),
+  setDeleteProduct: (product: Product | null) => set({selectedDeleteProduct: product}),
+  setEditProduct: (product: Product | null) => set({selectedEditProduct: product}),
 }));
 
 function App() {

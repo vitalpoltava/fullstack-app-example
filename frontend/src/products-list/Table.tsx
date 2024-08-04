@@ -21,10 +21,9 @@ type Props = {
 }
 
 const ProductsTable = ({list}: Props) => {
-  const setDeletedProduct = useStore((state) => state.setDeletedProduct)
-  const handleDelete = (product: Product) => {
-    setDeletedProduct && setDeletedProduct(product)
-  }
+  const setDeleteProduct = useStore((state) => state.setDeleteProduct)
+  const setEditProduct = useStore((state) => state.setEditProduct)
+
   return (
     <>
       {list.length === 0 ? <Alert severity="error">Error loading products</Alert> :
@@ -52,10 +51,10 @@ const ProductsTable = ({list}: Props) => {
                     <Typography variant="inherit" color={"lightgray"}>Not available</Typography>}</TableCell>
                   <TableCell align="right">
                     <IconButton aria-label="edit" size="small">
-                      <EditIcon fontSize="inherit" />
+                      <EditIcon onClick={() => setEditProduct && setEditProduct(row)} fontSize="inherit" />
                     </IconButton>
                     <IconButton aria-label="delete" size="small">
-                      <DeleteIcon onClick={() => handleDelete(row)} fontSize="inherit" />
+                      <DeleteIcon onClick={() => setDeleteProduct && setDeleteProduct(row)} fontSize="inherit" />
                     </IconButton>
                   </TableCell>
                 </TableRow>

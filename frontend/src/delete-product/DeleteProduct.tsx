@@ -20,7 +20,7 @@ const DeleteProduct = ({updateList}: Props) => {
   const [productDeleteFailure, setProductDeleteFailure] = useState<boolean>(false);
 
   const selectedDeleteProduct = useStore((state) => state.selectedDeleteProduct)
-  const setDeletedProduct = useStore((state) => state.setDeletedProduct)
+  const setDeleteProduct = useStore((state) => state.setDeleteProduct)
 
   useEffect(() => {
     if (selectedDeleteProduct) {
@@ -32,7 +32,7 @@ const DeleteProduct = ({updateList}: Props) => {
 
   const handleClose = () => {
     setOpen(false);
-    setDeletedProduct && setDeletedProduct(null)
+    setDeleteProduct && setDeleteProduct(null)
   };
 
   const handleCloseSuccess = () => {

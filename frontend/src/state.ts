@@ -4,7 +4,7 @@ const initialState: State = {
   editProductDialogOpened: false,
   selectedDeleteProduct: null,
   selectedEditProduct: null,
-  setDeletedProduct: null,
+  setDeleteProduct: null,
 }
 
 export default initialState;
