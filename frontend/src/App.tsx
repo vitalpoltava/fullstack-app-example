@@ -11,6 +11,7 @@ import './App.css'
 import AddProduct from "./add-new-product/AddProduct";
 import {getCities} from "./fetchers/http";
 import DeleteProduct from "./delete-product/DeleteProduct";
+import EditProduct from "./edit-product/EditProduct";
 
 export const useStore = create<State>((set) => ({
   ...initialState,
@@ -21,6 +22,7 @@ export const useStore = create<State>((set) => ({
 function App() {
   const [cities, setCities] = useState<City[]>([]);
   const [listVersion, updateListVersion] = useState<number>(0);
+
   const updateList = () => {
     updateListVersion(listVersion + 1);
   }
@@ -42,6 +44,7 @@ function App() {
         </Grid>
         <List key={listVersion} />
         <DeleteProduct updateList={updateList} />
+        <EditProduct updateList={updateList} cities={cities} />
       </Box>
     </Container>
   );

@@ -5,6 +5,7 @@ const initialState: State = {
   selectedDeleteProduct: null,
   selectedEditProduct: null,
   setDeleteProduct: null,
+  setEditProduct: null,
 }
 
 export default initialState;
