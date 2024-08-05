@@ -27,12 +27,12 @@ const EditProduct = ({updateList, cities}: Props) => {
   const [productEditFailure, setProductEditFailure] = useState<boolean>(false);
   const [stockOptions, setStockOptions] = useState<string[]>([]);
 
-  const selectedEditProduct = useStore((state) => state.selectedEditProduct)
-  const setEditProduct = useStore((state) => state.setEditProduct)
-
   const [productName, setProductName] = useState<string>('');
   const [productDescription, setProductDescription] = useState<string>('');
   const [productPrice, setProductPrice] = useState<string>('');
+
+  const selectedEditProduct = useStore((state) => state.selectedEditProduct);
+  const setEditProduct = useStore((state) => state.setEditProduct);
 
   useEffect(() => {
     if (selectedEditProduct) {
@@ -42,7 +42,7 @@ const EditProduct = ({updateList, cities}: Props) => {
         setStockOptions(citiesObj)
       }
 
-      // init form
+      // init form values
       setProductPrice(getPrice(selectedEditProduct.price))
       setProductDescription(selectedEditProduct.description)
       setProductName(selectedEditProduct.name)
