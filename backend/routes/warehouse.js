@@ -11,7 +11,7 @@ router.get('/', async (req, res, next) => {
 
 /* POST new product availability record */
 router.post('/', async (req, res, next) => {
-  const productId = req.body.productId;
+  const productId = parseInt(req.body.productId, 10);
   const warehouseIds = req.body.ids
   const data = warehouseIds.map((houseId) => ({productId, houseId}))
   const newRecord = await prisma.stock.createMany({data})
@@ -20,7 +20,7 @@ router.post('/', async (req, res, next) => {
 })
 
 router.delete('/', async (req, res, next) => {
-  const productId = req.body.productId;
+  const productId = parseInt(req.body.productId, 10);
   const deletedRecords = await prisma.stock.deleteMany({
     where: {
       productId

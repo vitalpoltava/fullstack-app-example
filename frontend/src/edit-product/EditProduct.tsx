@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import type {City, NewProduct} from "../types/products";
+import type {City, EditProduct} from "../types/products";
 import Alert from "@mui/material/Alert";
 import Snackbar from '@mui/material/Snackbar';
 import Grid from "@mui/material/Grid";
@@ -13,7 +13,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import FormLabel from '@mui/material/FormLabel';
 import {useStore} from "../App";
-import {isChecked} from "./utils";
+import {getCityIds, getPrice} from "./utils";
+import {deleteWarehouse, updateProduct, postWarehouse} from "../fetchers/http";
 
 type Props = {
   updateList: Function;
@@ -24,12 +25,29 @@ const EditProduct = ({updateList, cities}: Props) => {
   const [open, setOpen] = useState(false);
   const [productEditSuccess, setProductEditSuccess] = useState<boolean>(false);
   const [productEditFailure, setProductEditFailure] = useState<boolean>(false);
+  const [stockOptions, setStockOptions] = useState<string[]>([]);
 
-  const selectedEditProduct = useStore((state) => state.selectedEditProduct);
+  const selectedEditProduct = useStore((state) => state.selectedEditProduct)
   const setEditProduct = useStore((state) => state.setEditProduct)
+
+  const [productName, setProductName] = useState<string>('');
+  const [productDescription, setProductDescription] = useState<string>('');
+  const [productPrice, setProductPrice] = useState<string>('');
 
   useEffect(() => {
     if (selectedEditProduct) {
+
+      if (selectedEditProduct.stock.length) {
+        const citiesObj: string[] = getCityIds(selectedEditProduct.stock, cities)
+        setStockOptions(citiesObj)
+      }
+
+      // init form
+      setProductPrice(getPrice(selectedEditProduct.price))
+      setProductDescription(selectedEditProduct.description)
+      setProductName(selectedEditProduct.name)
+
+      // Open dialog
       setOpen(true);
     } else {
       handleClose()
@@ -42,20 +60,27 @@ const EditProduct = ({updateList, cities}: Props) => {
   };
 
   const handleEditSubmit = (json: { [p: string]: any }) => {
-    const editProductItem: NewProduct = {
+    const editProductItem: EditProduct = {
+      id: json.id,
       name: json.name,
       description: json.description,
-      price: json.price,
+      price: parseInt(json.price, 10) * 100,
     };
 
     const editAvailabilityObject: string[] = cities.reduce((acc: string[], item) => {
-      if (json[item.id]) {
-        acc.push(item.id)
-      }
+      json[item.id] && acc.push(item.id)
       return acc;
     }, []);
 
-
+    deleteWarehouse(editProductItem.id)
+      .then(() => postWarehouse(editProductItem.id, editAvailabilityObject))
+      .then(() => updateProduct(editProductItem))
+      .then(() => {
+        updateList()
+        setProductEditSuccess(true)
+      })
+      .catch(() => setProductEditFailure(true))
+      .finally(handleClose);
   };
 
   const handleCloseSuccess = () => {
@@ -66,9 +91,12 @@ const EditProduct = ({updateList, cities}: Props) => {
     setProductEditFailure(false)
   }
 
-  if (!selectedEditProduct) {
-    console.warn('No product selected to edit!')
-    return null;
+  const updateStockOptions = (id: string) => {
+    if (stockOptions.includes(id)) {
+      setStockOptions(stockOptions.filter((optionId) => optionId !== id));
+    } else {
+      setStockOptions([...stockOptions, id])
+    }
   }
 
   return (
@@ -89,7 +117,7 @@ const EditProduct = ({updateList, cities}: Props) => {
       >
         <DialogTitle>Edit Product</DialogTitle>
         <DialogContent>
-          <input type={"hidden"} value={selectedEditProduct.id}/>
+          <input name={"id"} type={"hidden"} value={selectedEditProduct && selectedEditProduct.id || 0}/>
           <TextField
             autoFocus
             required
@@ -100,7 +128,8 @@ const EditProduct = ({updateList, cities}: Props) => {
             type="text"
             fullWidth
             variant="standard"
-            value={selectedEditProduct.name}
+            onChange={(event) => setProductName(event.target.value)}
+            value={productName}
           />
           <TextField
             required
@@ -111,7 +140,8 @@ const EditProduct = ({updateList, cities}: Props) => {
             type="text"
             fullWidth
             variant="standard"
-            value={selectedEditProduct.description}
+            onChange={(event) => setProductDescription(event.target.value)}
+            value={productDescription}
           />
           <TextField
             required
@@ -122,17 +152,19 @@ const EditProduct = ({updateList, cities}: Props) => {
             type="number"
             fullWidth
             variant="standard"
-            value={selectedEditProduct.price}
+            onChange={(event) => setProductPrice(event.target.value)}
+            value={productPrice}
           />
           {cities.length ? (
             <>
               <FormLabel sx={{mt: 3, mb: 2}} component="legend">Assign availability:</FormLabel>
               <Grid container spacing={2}>
                 {cities.map((item: City) => (
-                  <Grid item xs={6}>
+                  <Grid item xs={6} key={item.id}>
                     <FormControlLabel control={
                       <Checkbox name={item.id} value={true}
-                                checked={(isChecked(selectedEditProduct.stock, item.city))}/>
+                                onClick={() => updateStockOptions(item.id)}
+                                checked={(stockOptions.includes(item.id))}/>
                     } label={item.city}/>
                   </Grid>
                 ))}
@@ -171,4 +203,4 @@ const EditProduct = ({updateList, cities}: Props) => {
   )
 }
 
-export default EditProduct;
+export default memo(EditProduct);

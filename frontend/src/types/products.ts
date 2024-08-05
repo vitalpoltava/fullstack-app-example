@@ -13,6 +13,7 @@ export type Product = {
 }
 
 export type NewProduct = Omit<Product, "id" | "stock">
+export type EditProduct = Omit<Product, "stock">
 
 export type City = {
   id: string,

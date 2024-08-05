@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, memo} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -44,7 +44,7 @@ const AddProduct = ({updateList, cities}: Props) => {
     const newProductItem: NewProduct = {
       name: json.name,
       description: json.description,
-      price: json.price,
+      price: parseInt(json.price, 10) * 100,
     };
 
     const availabilityObject: string[] = cities.reduce((acc: string[], item) => {
@@ -121,7 +121,7 @@ const AddProduct = ({updateList, cities}: Props) => {
               <FormLabel sx={{mt: 3, mb: 2}} component="legend">Assign availability:</FormLabel>
               <Grid container spacing={2}>
                 {cities.map((item: City) => (
-                  <Grid item xs={6}>
+                  <Grid item xs={6} key={item.id}>
                     <FormControlLabel control={<Checkbox name={item.id} value={true}/>} label={item.city}/>
                   </Grid>
                 ))}
@@ -161,4 +161,4 @@ const AddProduct = ({updateList, cities}: Props) => {
   )
 }
 
-export default AddProduct;
+export default memo(AddProduct);

@@ -50,11 +50,13 @@ const ProductsTable = ({list}: Props) => {
                   <TableCell align="right">{getAvailability(row.stock) ||
                     <Typography variant="inherit" color={"lightgray"}>Not available</Typography>}</TableCell>
                   <TableCell align="right">
-                    <IconButton aria-label="edit" size="small">
-                      <EditIcon onClick={() => setEditProduct && setEditProduct(row)} fontSize="inherit" />
+                    <IconButton aria-label="edit" size="small"
+                                onClick={() => setEditProduct && setEditProduct(row)}>
+                      <EditIcon fontSize="inherit"/>
                     </IconButton>
-                    <IconButton aria-label="delete" size="small">
-                      <DeleteIcon onClick={() => setDeleteProduct && setDeleteProduct(row)} fontSize="inherit" />
+                    <IconButton aria-label="delete" size="small"
+                                onClick={() => setDeleteProduct && setDeleteProduct(row)}>
+                      <DeleteIcon fontSize="inherit"/>
                     </IconButton>
                   </TableCell>
                 </TableRow>

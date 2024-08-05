@@ -33,8 +33,23 @@ router.post('/', async (req, res, next) => {
   res.json(newProduct);
 })
 
+router.put('/', async (req, res, next) => {
+  const updatedProduct = await prisma.product.update({
+    where: {
+      id: parseInt(req.body.id, 10),
+    },
+    data: {
+      name: req.body.name,
+      description: req.body.description,
+      price: parseInt(req.body.price, 10)
+    }
+  })
+
+  res.json(updatedProduct);
+})
+
 router.delete('/', async (req, res, next) => {
-  const productId = req.body.productId;
+  const productId = parseInt(req.body.productId, 10);
   const deletedRecords = await prisma.product.delete({
     where: {
       id: productId
