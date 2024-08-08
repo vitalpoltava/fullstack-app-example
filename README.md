@@ -7,16 +7,18 @@ CRUD App with simple product items
 ### Frontend
 - ReactJS
 - Zustand
+- Typescript
 
 ### Backend
 - NodeJS
-- ExpressJS
+- ExpressJS (`./backend`)
+- NestJS+TypeScript (`./backend-nestjs`)
 - Prisma ORM
 - SQLite DB
 
 ## You can run the app:
 
-`cd backend`
+`cd backend` OR `cd backend-nestjs`
 `npm i`
 `npm start`
 

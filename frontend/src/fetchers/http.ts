@@ -19,7 +19,7 @@ export const deleteProduct = (productId: string) => fetch(`${API_BASE_URL}/produ
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({productId})
-}).then((res) => res.json());
+});
 export const updateProduct = (data: EditProduct) => fetch(`${API_BASE_URL}/products/`, {
   method: 'PUT',
   headers: {
