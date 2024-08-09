@@ -1,17 +1,13 @@
-import {Body, Controller, Delete, Get, Put, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Put, Post, UsePipes} from '@nestjs/common';
 import {ProductsService} from "../services/products.service";
 import {Product} from "@prisma/client";
-
-type RequestProduct = {
-  id: string;
-  name: string;
-  description: string;
-  price: string;
-}
+import type {RequestProduct} from "../types/product";
+import {IntBodyPropsPipe} from "../pipes/int-body-props-pipe";
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(private readonly productsService: ProductsService) {
+  }
 
   @Get()
   async getAllProducts(): Promise<Product[]> {
@@ -24,15 +20,17 @@ export class ProductsController {
   }
 
   @Put()
+  @UsePipes(IntBodyPropsPipe)
   async putProduct(@Body() putData: RequestProduct): Promise<Product> {
-    const { id, price, name, description } = putData;
+    const {id, price, name, description} = putData;
     return this.productsService.putProduct(
-      {id: parseInt(id), name, description, price: parseInt(price)}
+      {id, name, description, price}
     )
   }
 
   @Delete()
-  async deleteProduct(@Body() data: {productId: string}): Promise<void> {
-    return this.productsService.deleteProduct(parseInt(data.productId))
+  @UsePipes(IntBodyPropsPipe)
+  async deleteProduct(@Body() data: { productId: number }): Promise<void> {
+    return this.productsService.deleteProduct(data.productId)
   }
 }

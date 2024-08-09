@@ -1,10 +1,12 @@
-import {Body, Controller, Delete, Get, Put, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Post, UsePipes} from '@nestjs/common';
 import {WarehouseService} from "../services/warehouse.service";
-import {Prisma, Stock, Warehouse} from "@prisma/client";
+import {Prisma, Warehouse} from "@prisma/client";
+import {IntBodyPropsPipe} from "../pipes/int-body-props-pipe";
 
 @Controller('warehouse')
 export class WarehouseController {
-  constructor(private readonly warehouseService: WarehouseService) {}
+  constructor(private readonly warehouseService: WarehouseService) {
+  }
 
   @Get()
   async getAllWarehouses(): Promise<Warehouse[]> {
@@ -12,14 +14,16 @@ export class WarehouseController {
   }
 
   @Post()
-  async postWarehouse(@Body() postData: {productId: string, ids: string[]}): Promise<Prisma.BatchPayload> {
+  @UsePipes(IntBodyPropsPipe)
+  async postWarehouse(@Body() postData: { productId: number, ids: number[] }): Promise<Prisma.BatchPayload> {
     const {productId, ids} = postData;
-    return this.warehouseService.postStocks(parseInt(productId), ids.map((id) => parseInt(id)))
+    return this.warehouseService.postStocks(productId, ids)
   }
 
   @Delete()
-  async deleteWarehouse(@Body() deleteData: {productId: string}): Promise<Prisma.BatchPayload> {
+  @UsePipes(IntBodyPropsPipe)
+  async deleteWarehouse(@Body() deleteData: { productId: number }): Promise<Prisma.BatchPayload> {
     const {productId} = deleteData;
-    return this.warehouseService.deleteStocks(parseInt(productId))
+    return this.warehouseService.deleteStocks(productId)
   }
 }
